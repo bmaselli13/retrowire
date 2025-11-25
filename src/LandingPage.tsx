@@ -195,104 +195,70 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Simple, Transparent Pricing
+              Simple, Affordable Pricing
             </h2>
             <p className="text-xl text-gray-400">
-              Choose the plan that fits your needs
+              Try free for 7 days, then just $10/month
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* Free Plan */}
-            <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold text-white mb-2">Starter</h3>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-white">$0</span>
-                <span className="text-gray-400">/month</span>
+          <div className="max-w-md mx-auto">
+            <div className="bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl p-8 shadow-2xl">
+              <div className="text-center mb-6">
+                <div className="inline-block bg-yellow-400 text-gray-900 px-4 py-1 rounded-full font-bold text-sm mb-4">
+                  7-DAY FREE TRIAL
+                </div>
+                <h3 className="text-3xl font-bold text-white mb-2">RetroWire Pro</h3>
+                <div className="mb-2">
+                  <span className="text-5xl font-bold text-white">$10</span>
+                  <span className="text-blue-100 text-xl">/month</span>
+                </div>
+                <p className="text-blue-100">Cancel anytime, no questions asked</p>
               </div>
+
               <ul className="space-y-4 mb-8">
                 <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <span className="text-gray-300">5 projects</span>
+                  <CheckCircle className="h-6 w-6 text-white" />
+                  <span className="text-white font-medium">Unlimited projects</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <span className="text-gray-300">Basic components</span>
+                  <CheckCircle className="h-6 w-6 text-white" />
+                  <span className="text-white font-medium">Full component library</span>
                 </li>
                 <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <span className="text-gray-300">PNG export</span>
+                  <CheckCircle className="h-6 w-6 text-white" />
+                  <span className="text-white font-medium">PDF & PNG export</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="h-6 w-6 text-white" />
+                  <span className="text-white font-medium">Auto-wire detection</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="h-6 w-6 text-white" />
+                  <span className="text-white font-medium">Priority support</span>
+                </li>
+                <li className="flex items-center space-x-3">
+                  <CheckCircle className="h-6 w-6 text-white" />
+                  <span className="text-white font-medium">Bill of materials generator</span>
                 </li>
               </ul>
-              <button className="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold transition">
-                Start Free
+
+              <button 
+                onClick={() => window.location.href = '/app'}
+                className="w-full bg-white hover:bg-gray-100 text-blue-600 py-4 rounded-lg font-bold text-lg transition transform hover:scale-105"
+              >
+                Start 7-Day Free Trial
               </button>
+              
+              <p className="text-center text-blue-100 text-sm mt-4">
+                No credit card required • Full access during trial
+              </p>
             </div>
 
-            {/* Pro Plan - Highlighted */}
-            <div className="bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl p-8 relative transform scale-105 shadow-2xl">
-              <div className="absolute top-0 right-0 bg-yellow-400 text-gray-900 px-4 py-1 rounded-bl-lg rounded-tr-lg font-bold text-sm">
-                POPULAR
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Professional</h3>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-white">$29</span>
-                <span className="text-blue-100">/month</span>
-              </div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-white" />
-                  <span className="text-white">Unlimited projects</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-white" />
-                  <span className="text-white">Full component library</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-white" />
-                  <span className="text-white">PDF, PNG, JSON export</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-white" />
-                  <span className="text-white">Auto-wire detection</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-white" />
-                  <span className="text-white">Priority support</span>
-                </li>
-              </ul>
-              <button className="w-full bg-white hover:bg-gray-100 text-blue-600 py-3 rounded-lg font-semibold transition">
-                Start Pro Trial
-              </button>
-            </div>
-
-            {/* Enterprise Plan */}
-            <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold text-white mb-2">Enterprise</h3>
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-white">Custom</span>
-              </div>
-              <ul className="space-y-4 mb-8">
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <span className="text-gray-300">Everything in Pro</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <span className="text-gray-300">Custom components</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <span className="text-gray-300">Team collaboration</span>
-                </li>
-                <li className="flex items-center space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <span className="text-gray-300">Dedicated support</span>
-                </li>
-              </ul>
-              <button className="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold transition">
-                Contact Sales
-              </button>
+            <div className="mt-12 text-center">
+              <p className="text-gray-400 mb-6">
+                🔒 Secure payment • 💯 Money-back guarantee • ❤️ Used by 500+ professionals
+              </p>
             </div>
           </div>
         </div>
@@ -314,7 +280,7 @@ export default function LandingPage() {
             <span>Start Building Now</span>
             <ArrowRight className="h-6 w-6" />
           </button>
-          <p className="text-blue-100 mt-4">No credit card required • 14-day free trial</p>
+          <p className="text-blue-100 mt-4">No credit card required • 7-day free trial</p>
         </div>
       </section>
 
