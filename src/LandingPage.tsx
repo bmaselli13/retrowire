@@ -6,6 +6,7 @@ import { useAuth } from './firebase/AuthContext';
 export default function LandingPage() {
   const [email, setEmail] = useState('');
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [prefillEmail, setPrefillEmail] = useState('');
   const { user } = useAuth();
 
   const handleGetStarted = async (e: React.FormEvent) => {
@@ -29,8 +30,17 @@ export default function LandingPage() {
       console.error('Form submission error:', error);
     }
 
-    // Show authentication modal
+    // Pass email to auth modal and show it
+    setPrefillEmail(email);
     setShowAuthModal(true);
+  };
+
+  const handleCTAClick = () => {
+    if (user) {
+      window.location.href = '/app';
+    } else {
+      setShowAuthModal(true);
+    }
   };
 
   return (
@@ -49,10 +59,10 @@ export default function LandingPage() {
               <a href="#pricing" className="text-gray-300 hover:text-white transition">Pricing</a>
             </nav>
             <button 
-              onClick={() => window.location.href = '/app'}
+              onClick={handleCTAClick}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition"
             >
-              Launch App
+              {user ? 'Launch App' : 'Sign In'}
             </button>
           </div>
         </div>
@@ -277,10 +287,10 @@ export default function LandingPage() {
               </ul>
 
               <button 
-                onClick={() => window.location.href = '/app'}
+                onClick={handleCTAClick}
                 className="w-full bg-white hover:bg-gray-100 text-blue-600 py-4 rounded-lg font-bold text-lg transition transform hover:scale-105"
               >
-                Start 7-Day Free Trial
+                {user ? 'Go to App' : 'Start 7-Day Free Trial'}
               </button>
               
               <p className="text-center text-blue-100 text-sm mt-4">
@@ -307,10 +317,10 @@ export default function LandingPage() {
             Join thousands of professionals and hobbyists who trust RetroWire
           </p>
           <button
-            onClick={() => window.location.href = '/app'}
+            onClick={handleCTAClick}
             className="bg-white hover:bg-gray-100 text-blue-600 px-12 py-4 rounded-lg font-bold text-lg transition transform hover:scale-105 inline-flex items-center space-x-2"
           >
-            <span>Start Building Now</span>
+            <span>{user ? 'Go to App' : 'Start Building Now'}</span>
             <ArrowRight className="h-6 w-6" />
           </button>
           <p className="text-blue-100 mt-4">No credit card required • 7-day free trial</p>
@@ -318,7 +328,13 @@ export default function LandingPage() {
       </section>
 
       {/* Auth Modal */}
-      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
+      {showAuthModal && (
+        <AuthModal 
+          onClose={() => setShowAuthModal(false)} 
+          initialEmail={prefillEmail}
+          defaultToSignup={true}
+        />
+      )}
 
       {/* Footer */}
       <footer className="bg-gray-900 border-t border-gray-800 py-12 px-4 sm:px-6 lg:px-8">

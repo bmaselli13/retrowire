@@ -5,11 +5,13 @@ import toast from 'react-hot-toast';
 
 interface AuthModalProps {
   onClose: () => void;
+  initialEmail?: string;
+  defaultToSignup?: boolean;
 }
 
-export default function AuthModal({ onClose }: AuthModalProps) {
-  const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
+export default function AuthModal({ onClose, initialEmail = '', defaultToSignup = true }: AuthModalProps) {
+  const [isLogin, setIsLogin] = useState(!defaultToSignup);
+  const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
@@ -20,6 +22,8 @@ export default function AuthModal({ onClose }: AuthModalProps) {
       await signInWithGoogle();
       toast.success('Signed in successfully!');
       onClose();
+      // Redirect to app after successful sign-in
+      window.location.href = '/app';
     } catch (error: any) {
       console.error('Google sign-in error:', error);
       toast.error(error.message || 'Failed to sign in with Google');
@@ -41,6 +45,8 @@ export default function AuthModal({ onClose }: AuthModalProps) {
         toast.success('Account created successfully!');
       }
       onClose();
+      // Redirect to app after successful authentication
+      window.location.href = '/app';
     } catch (error: any) {
       console.error('Email auth error:', error);
       const message = error.code === 'auth/email-already-in-use'
@@ -171,7 +177,6 @@ export default function AuthModal({ onClose }: AuthModalProps) {
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
-                setEmail('');
                 setPassword('');
               }}
               className="text-blue-400 hover:text-blue-300 text-sm transition"
