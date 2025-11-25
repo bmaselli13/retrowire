@@ -84,18 +84,6 @@ export default function LandingPage() {
               <span>Free trial included</span>
             </div>
           </div>
-
-          {/* Hero Image/Demo */}
-          <div className="mt-16 relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10"></div>
-            <div className="rounded-2xl overflow-hidden border-4 border-gray-800 shadow-2xl">
-              <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-8 aspect-video flex items-center justify-center">
-                <div className="text-gray-500 text-lg">
-                  [App Screenshot/Demo Would Go Here]
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 

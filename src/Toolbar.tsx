@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useStore } from './store';
-import { FileDown, FileImage, Trash2, FileText, Zap, Keyboard } from 'lucide-react';
+import { FileDown, FileImage, Trash2, FileText, Zap, Keyboard, Home } from 'lucide-react';
 import { exportToPNG, exportToPDF, generateBOM, downloadBOMAsText } from './utils/export';
 import { autoWireComponents } from './utils/autoWire';
 import { ComponentDefinition } from './types';
@@ -201,6 +201,16 @@ function Toolbar() {
   return (
     <>
       <div className="absolute top-4 right-4 z-10 flex gap-2">
+        {/* Home Button */}
+        <button
+          onClick={() => window.location.href = '/'}
+          className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg shadow-lg transition-colors"
+          title="Back to Home"
+        >
+          <Home className="w-4 h-4" />
+          <span className="hidden sm:inline">Home</span>
+        </button>
+        
         {/* Voltage Selector */}
         <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg shadow-lg">
           <span className="text-white text-sm font-medium">Circuit:</span>
