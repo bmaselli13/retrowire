@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useStore } from './store';
-import { FileDown, FileImage, Trash2, FileText, Zap, Keyboard, Home } from 'lucide-react';
+import { FileDown, FileImage, Trash2, FileText, Zap, Keyboard, Home, LogOut, User } from 'lucide-react';
 import { exportToPNG, exportToPDF, generateBOM, downloadBOMAsText } from './utils/export';
 import { autoWireComponents } from './utils/autoWire';
 import { ComponentDefinition } from './types';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
+import { useAuth } from './firebase/AuthContext';
 import toast from 'react-hot-toast';
 
 function Toolbar() {
@@ -15,6 +16,18 @@ function Toolbar() {
   const [isExporting, setIsExporting] = useState(false);
   const [isAutoWiring, setIsAutoWiring] = useState(false);
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success('Signed out successfully');
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Failed to sign out');
+    }
+  };
 
   const handleExportPNG = async () => {
     setIsExporting(true);
@@ -307,6 +320,23 @@ function Toolbar() {
         >
           <Keyboard className="w-4 h-4" />
         </button>
+
+        {/* User Profile / Logout */}
+        {user && (
+          <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg shadow-lg">
+            <User className="w-4 h-4 text-blue-400" />
+            <span className="text-white text-sm hidden lg:inline max-w-[120px] truncate">
+              {user.displayName || user.email}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="ml-2 p-1.5 hover:bg-gray-700 rounded text-gray-400 hover:text-white transition-colors"
+              title="Sign Out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* BOM Modal */}

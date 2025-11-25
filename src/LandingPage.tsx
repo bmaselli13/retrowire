@@ -1,32 +1,36 @@
 import { useState } from 'react';
 import { ArrowRight, Zap, Download, FileText, Share2, CheckCircle, Sparkles, Star } from 'lucide-react';
+import AuthModal from './components/AuthModal';
+import { useAuth } from './firebase/AuthContext';
 
 export default function LandingPage() {
   const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { user } = useAuth();
 
   const handleGetStarted = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+
+    // If user is already logged in, go to app
+    if (user) {
+      window.location.href = '/app';
+      return;
+    }
 
     try {
-      // Submit form data to Netlify
+      // Submit email to Netlify Forms for lead capture
       const formData = new FormData(e.target as HTMLFormElement);
-      
       await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(formData as any).toString(),
       });
-
-      // After successful submission, redirect to app
-      window.location.href = '/app';
     } catch (error) {
       console.error('Form submission error:', error);
-      setIsSubmitting(false);
-      // Still redirect on error (user can still use app)
-      window.location.href = '/app';
     }
+
+    // Show authentication modal
+    setShowAuthModal(true);
   };
 
   return (
@@ -96,10 +100,9 @@ export default function LandingPage() {
             />
             <button
               type="submit"
-              disabled={isSubmitting}
-              className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center space-x-2 transition transform hover:scale-105 disabled:transform-none"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center space-x-2 transition transform hover:scale-105"
             >
-              <span>{isSubmitting ? 'Starting...' : 'Get Started'}</span>
+              <span>Get Started</span>
               <ArrowRight className="h-5 w-5" />
             </button>
           </form>
@@ -313,6 +316,9 @@ export default function LandingPage() {
           <p className="text-blue-100 mt-4">No credit card required • 7-day free trial</p>
         </div>
       </section>
+
+      {/* Auth Modal */}
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
 
       {/* Footer */}
       <footer className="bg-gray-900 border-t border-gray-800 py-12 px-4 sm:px-6 lg:px-8">
