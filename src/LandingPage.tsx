@@ -3,11 +3,30 @@ import { ArrowRight, Zap, Download, FileText, Share2, CheckCircle, Sparkles, Sta
 
 export default function LandingPage() {
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleGetStarted = (e: React.FormEvent) => {
+  const handleGetStarted = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Navigate to app or capture lead
-    window.location.href = '/app';
+    setIsSubmitting(true);
+
+    try {
+      // Submit form data to Netlify
+      const formData = new FormData(e.target as HTMLFormElement);
+      
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData as any).toString(),
+      });
+
+      // After successful submission, redirect to app
+      window.location.href = '/app';
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setIsSubmitting(false);
+      // Still redirect on error (user can still use app)
+      window.location.href = '/app';
+    }
   };
 
   return (
@@ -56,9 +75,19 @@ export default function LandingPage() {
             Perfect for retrofitting vintage electronics, custom builds, and professional projects.
           </p>
 
-          <form onSubmit={handleGetStarted} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-12">
+          <form 
+            name="signup"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            onSubmit={handleGetStarted} 
+            className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-12"
+          >
+            <input type="hidden" name="form-name" value="signup" />
+            <input type="hidden" name="bot-field" />
             <input
               type="email"
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
@@ -67,9 +96,10 @@ export default function LandingPage() {
             />
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center space-x-2 transition transform hover:scale-105"
+              disabled={isSubmitting}
+              className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg font-bold flex items-center justify-center space-x-2 transition transform hover:scale-105 disabled:transform-none"
             >
-              <span>Get Started</span>
+              <span>{isSubmitting ? 'Starting...' : 'Get Started'}</span>
               <ArrowRight className="h-5 w-5" />
             </button>
           </form>
