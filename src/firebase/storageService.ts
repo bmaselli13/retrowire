@@ -2,7 +2,7 @@
  * Upload user avatar (converts to base64 for Firestore storage)
  * This approach works on Firebase free tier without requiring Storage
  */
-export async function uploadAvatar(uid: string, file: File): Promise<string> {
+export async function uploadAvatar(_uid: string, file: File): Promise<string> {
   // Validate file
   if (!file.type.startsWith('image/')) {
     throw new Error('File must be an image');
@@ -25,7 +25,7 @@ export async function uploadAvatar(uid: string, file: File): Promise<string> {
 /**
  * Delete user avatar (no-op for base64, just return to keep API consistent)
  */
-export async function deleteAvatar(uid: string): Promise<void> {
+export async function deleteAvatar(_uid: string): Promise<void> {
   // No-op: base64 avatars are stored in Firestore user profile
   // They're deleted when profile field is updated
   return;
@@ -96,8 +96,8 @@ async function resizeImage(file: File, maxWidth: number, maxHeight: number): Pro
  * Process project thumbnail (already base64, just validate and compress if needed)
  */
 export async function uploadProjectThumbnail(
-  userId: string,
-  projectId: string,
+  _userId: string,
+  _projectId: string,
   thumbnail: string
 ): Promise<string> {
   // Thumbnail is already base64 from canvas
@@ -109,8 +109,8 @@ export async function uploadProjectThumbnail(
  * Delete project thumbnail (no-op for base64)
  */
 export async function deleteProjectThumbnail(
-  userId: string,
-  projectId: string
+  _userId: string,
+  _projectId: string
 ): Promise<void> {
   // No-op: base64 thumbnails are stored in Firestore project document
   return;
