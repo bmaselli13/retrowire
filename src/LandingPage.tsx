@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Zap, Download, FileText, Share2, CheckCircle, Sparkles, Star } from 'lucide-react';
 import AuthModal from './components/AuthModal';
 import { useAuth } from './firebase/AuthContext';
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [prefillEmail, setPrefillEmail] = useState('');
@@ -26,9 +28,9 @@ export default function LandingPage() {
   const handleGetStarted = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // If user is already logged in, go to app
+    // If user is already logged in, go to projects
     if (user) {
-      window.location.href = '/app';
+      navigate('/projects');
       return;
     }
 
@@ -50,7 +52,7 @@ export default function LandingPage() {
 
   const handleCTAClick = () => {
     if (user) {
-      window.location.href = '/app';
+      navigate('/projects');
     } else {
       setShowAuthModal(true);
     }
