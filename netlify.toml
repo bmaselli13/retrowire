@@ -21,6 +21,9 @@
   # Configure these in Netlify UI for security (do NOT hardcode secrets in repo)
   # STRIPE_SECRET_KEY = "sk_live_***"
   # STRIPE_PRICE_ID   = "price_***"
+  # Enable Netlify Smart Detection to avoid false positives (e.g., Firebase API keys like "AIza...")
+  SECRETS_SCAN_SMART_DETECTION_ENABLED = "true"
+  SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "true"
 
 [[headers]]
   for = "/*"
