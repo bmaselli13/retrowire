@@ -1,10 +1,6 @@
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import app from './config';
-
-const storage = getStorage(app);
-
 /**
- * Upload user avatar to Firebase Storage
+ * Upload user avatar (converts to base64 for Firestore storage)
+ * This approach works on Firebase free tier without requiring Storage
  */
 export async function uploadAvatar(uid: string, file: File): Promise<string> {
   // Validate file
@@ -21,29 +17,18 @@ export async function uploadAvatar(uid: string, file: File): Promise<string> {
   // Resize and compress image
   const resizedImage = await resizeImage(file, 200, 200);
   
-  // Upload to Firebase Storage
-  const avatarRef = ref(storage, `avatars/${uid}/avatar.jpg`);
-  await uploadBytes(avatarRef, resizedImage);
-  
-  // Get download URL
-  const downloadURL = await getDownloadURL(avatarRef);
-  return downloadURL;
+  // Convert to base64 for Firestore storage
+  const base64 = await blobToBase64(resizedImage);
+  return base64;
 }
 
 /**
- * Delete user avatar from Firebase Storage
+ * Delete user avatar (no-op for base64, just return to keep API consistent)
  */
 export async function deleteAvatar(uid: string): Promise<void> {
-  const avatarRef = ref(storage, `avatars/${uid}/avatar.jpg`);
-  
-  try {
-    await deleteObject(avatarRef);
-  } catch (error: any) {
-    // Ignore if file doesn't exist
-    if (error.code !== 'storage/object-not-found') {
-      throw error;
-    }
-  }
+  // No-op: base64 avatars are stored in Firestore user profile
+  // They're deleted when profile field is updated
+  return;
 }
 
 /**
@@ -108,40 +93,40 @@ async function resizeImage(file: File, maxWidth: number, maxHeight: number): Pro
 }
 
 /**
- * Upload project thumbnail
+ * Process project thumbnail (already base64, just validate and compress if needed)
  */
 export async function uploadProjectThumbnail(
   userId: string,
   projectId: string,
   thumbnail: string
 ): Promise<string> {
-  // Convert base64 to blob
-  const blob = await (await fetch(thumbnail)).blob();
-  
-  // Upload to Firebase Storage
-  const thumbnailRef = ref(storage, `projects/${userId}/${projectId}/thumbnail.png`);
-  await uploadBytes(thumbnailRef, blob);
-  
-  // Get download URL
-  const downloadURL = await getDownloadURL(thumbnailRef);
-  return downloadURL;
+  // Thumbnail is already base64 from canvas
+  // Just return it - will be stored directly in Firestore
+  return thumbnail;
 }
 
 /**
- * Delete project thumbnail
+ * Delete project thumbnail (no-op for base64)
  */
 export async function deleteProjectThumbnail(
   userId: string,
   projectId: string
 ): Promise<void> {
-  const thumbnailRef = ref(storage, `projects/${userId}/${projectId}/thumbnail.png`);
-  
-  try {
-    await deleteObject(thumbnailRef);
-  } catch (error: any) {
-    // Ignore if file doesn't exist
-    if (error.code !== 'storage/object-not-found') {
-      throw error;
-    }
-  }
+  // No-op: base64 thumbnails are stored in Firestore project document
+  return;
+}
+
+/**
+ * Convert Blob to base64 string
+ */
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }

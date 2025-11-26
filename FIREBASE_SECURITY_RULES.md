@@ -64,65 +64,11 @@ service cloud.firestore {
 }
 ```
 
-## Firebase Storage Rules
+## Firebase Storage - NOT REQUIRED
 
-You also need to configure storage rules for avatar uploads.
+**Note:** This app uses base64 encoding to store images directly in Firestore, which works on the free Spark plan. You do NOT need to configure Firebase Storage or upgrade to a paid plan.
 
-### Steps to Apply Rules:
-
-1. In Firebase Console, select your project
-2. Click **Storage** in the left sidebar
-3. Click the **Rules** tab
-4. Replace the existing rules with the rules below
-5. Click **Publish**
-
-### Storage Rules:
-
-```javascript
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    
-    // Helper function to check if user is authenticated
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-    
-    // Helper function to check if user owns the file
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-    
-    // Helper to check if file is an image
-    function isImage() {
-      return request.resource.contentType.matches('image/.*');
-    }
-    
-    // Helper to check file size (max 5MB)
-    function isValidSize() {
-      return request.resource.size < 5 * 1024 * 1024;
-    }
-    
-    // User avatars
-    match /avatars/{userId}/{fileName} {
-      // Anyone can read avatars (for displaying in shared projects)
-      allow read: if true;
-      
-      // Only owner can upload/delete their avatar
-      allow write: if isOwner(userId) && isImage() && isValidSize();
-    }
-    
-    // Project thumbnails
-    match /projects/{userId}/{projectId}/{fileName} {
-      // Anyone can read thumbnails (for shared/public projects)
-      allow read: if true;
-      
-      // Only project owner can upload/delete thumbnails
-      allow write: if isOwner(userId) && isImage() && isValidSize();
-    }
-  }
-}
-```
+See `FIREBASE_STORAGE_WORKAROUND.md` for details on this approach.
 
 ## Index Creation (Important!)
 
