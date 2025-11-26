@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRight, Zap, Download, FileText, Share2, CheckCircle, Sparkles, Star } from 'lucide-react';
 import AuthModal from './components/AuthModal';
 import { useAuth } from './firebase/AuthContext';
@@ -8,6 +8,20 @@ export default function LandingPage() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [prefillEmail, setPrefillEmail] = useState('');
   const { user } = useAuth();
+
+  // Fix race condition: Only show modal after email is set
+  useEffect(() => {
+    if (prefillEmail && !showAuthModal) {
+      setShowAuthModal(true);
+    }
+  }, [prefillEmail, showAuthModal]);
+
+  // Reset email when modal closes
+  useEffect(() => {
+    if (!showAuthModal) {
+      setPrefillEmail('');
+    }
+  }, [showAuthModal]);
 
   const handleGetStarted = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,9 +44,8 @@ export default function LandingPage() {
       console.error('Form submission error:', error);
     }
 
-    // Pass email to auth modal and show it
+    // Set email - useEffect will show modal after state updates
     setPrefillEmail(email);
-    setShowAuthModal(true);
   };
 
   const handleCTAClick = () => {
