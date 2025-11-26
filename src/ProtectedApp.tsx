@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { useAuth } from './firebase/AuthContext';
 import App from './App';
 import AuthModal from './components/AuthModal';
+import WelcomeModal from './components/WelcomeModal';
 
 export default function ProtectedApp() {
   const { user } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
   useEffect(() => {
     // If user is not authenticated, show auth modal
@@ -13,6 +16,21 @@ export default function ProtectedApp() {
       setShowAuthModal(true);
     }
   }, [user]);
+
+  // Show welcome modal for first-time users (after successful auth)
+  useEffect(() => {
+    if (user && !hasSeenWelcome) {
+      // Check localStorage to see if user has seen welcome before
+      const hasSeenBefore = localStorage.getItem(`welcome-${user.uid}`);
+      
+      if (!hasSeenBefore) {
+        // Small delay to let user see they're logged in
+        setTimeout(() => setShowWelcome(true), 800);
+        localStorage.setItem(`welcome-${user.uid}`, 'true');
+        setHasSeenWelcome(true);
+      }
+    }
+  }, [user, hasSeenWelcome]);
 
   // If not authenticated and modal is closed, redirect to home
   if (!user && !showAuthModal) {
@@ -43,6 +61,18 @@ export default function ProtectedApp() {
     );
   }
 
-  // User is authenticated, show the app
-  return <App />;
+  // User is authenticated, show the app (with welcome modal for new users)
+  return (
+    <>
+      <App />
+      
+      {/* Welcome Modal for First-Time Users */}
+      {showWelcome && (
+        <WelcomeModal
+          onClose={() => setShowWelcome(false)}
+          userName={user?.displayName || user?.email?.split('@')[0] || null}
+        />
+      )}
+    </>
+  );
 }
