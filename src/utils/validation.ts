@@ -88,8 +88,9 @@ export const getDefaultWireColor = (port: Port): string => {
       case 'GND': return '#1f2937';  // Dark Gray (visible on dark backgrounds, represents ground)
       case '3.3V': return '#60a5fa'; // Bright Blue
       case '5V': return '#ff0000';   // BRIGHT RED for 5V power (maximum visibility)
+      case '9V': return '#fb923c';   // Orange (for 9V batteries)
       case '12V': return '#fbbf24';  // Bright Yellow
-      case '24V': return '#fb923c';  // Bright Orange
+      case '24V': return '#f97316';  // Bright Orange
       case 'AC_MAINS': return '#dc2626'; // Dark Red
     }
   }

@@ -40,7 +40,7 @@ export const componentLibrary: ComponentDefinition[] = [
       </svg>
     `),
     ports: [
-      { id: 'no', label: 'NO (to GPIO)', type: 'DIGITAL_OUT', x: 50, y: 10 },
+      { id: 'no', label: 'NO (to GPIO)', type: 'DIGITAL_OUT', voltage: '5V', x: 50, y: 10 },
       { id: 'gnd', label: 'GND (to ground)', type: 'POWER', voltage: 'GND', x: 50, y: 90 },
     ]
   },
@@ -62,10 +62,10 @@ export const componentLibrary: ComponentDefinition[] = [
       </svg>
     `),
     ports: [
-      { id: 'up', label: 'Up', type: 'DIGITAL_OUT', x: 50, y: 5 },
-      { id: 'down', label: 'Down', type: 'DIGITAL_OUT', x: 50, y: 95 },
-      { id: 'left', label: 'Left', type: 'DIGITAL_OUT', x: 5, y: 50 },
-      { id: 'right', label: 'Right', type: 'DIGITAL_OUT', x: 95, y: 50 },
+      { id: 'up', label: 'Up', type: 'DIGITAL_OUT', voltage: '5V', x: 50, y: 5 },
+      { id: 'down', label: 'Down', type: 'DIGITAL_OUT', voltage: '5V', x: 50, y: 95 },
+      { id: 'left', label: 'Left', type: 'DIGITAL_OUT', voltage: '5V', x: 5, y: 50 },
+      { id: 'right', label: 'Right', type: 'DIGITAL_OUT', voltage: '5V', x: 95, y: 50 },
       { id: 'gnd', label: 'GND', type: 'POWER', voltage: 'GND', x: 50, y: 50 },
     ]
   },
@@ -119,25 +119,36 @@ export const componentLibrary: ComponentDefinition[] = [
     id: 'zero-delay-encoder',
     name: 'Zero Delay USB Encoder',
     category: 'controller',
-    width: 160,
-    height: 100,
+    width: 200,
+    height: 140,
     imageUrl: 'data:image/svg+xml;base64,' + btoa(`
-      <svg width="160" height="100" xmlns="http://www.w3.org/2000/svg">
-        <rect width="160" height="100" fill="#2c3e50" stroke="#333" stroke-width="2"/>
-        <text x="80" y="40" font-family="Arial" font-size="12" font-weight="bold" fill="white" text-anchor="middle">Zero Delay</text>
-        <text x="80" y="55" font-family="Arial" font-size="10" fill="#ecf0f1" text-anchor="middle">USB Encoder</text>
-        <rect x="70" y="10" width="20" height="12" fill="#555"/>
-        <circle cx="20" cy="30" r="4" fill="#e74c3c"/>
-        <circle cx="35" cy="30" r="4" fill="#3498db"/>
-        <circle cx="50" cy="30" r="4" fill="#2ecc71"/>
+      <svg width="200" height="140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" fill="#2c3e50" stroke="#333" stroke-width="2"/>
+        <text x="100" y="50" font-family="Arial" font-size="14" font-weight="bold" fill="white" text-anchor="middle">Zero Delay</text>
+        <text x="100" y="68" font-family="Arial" font-size="11" fill="#ecf0f1" text-anchor="middle">USB Encoder</text>
+        <rect x="90" y="15" width="20" height="15" fill="#555"/>
+        <circle cx="25" cy="35" r="4" fill="#e74c3c"/>
+        <circle cx="45" cy="35" r="4" fill="#3498db"/>
+        <circle cx="65" cy="35" r="4" fill="#2ecc71"/>
+        <circle cx="85" cy="35" r="4" fill="#f39c12"/>
+        <circle cx="105" cy="35" r="4" fill="#9b59b6"/>
+        <circle cx="125" cy="35" r="4" fill="#e74c3c"/>
       </svg>
     `),
     ports: [
-      { id: 'p1', label: 'P1', type: 'DIGITAL_IN', x: 10, y: 20 },
-      { id: 'p2', label: 'P2', type: 'DIGITAL_IN', x: 10, y: 35 },
-      { id: 'p3', label: 'P3', type: 'DIGITAL_IN', x: 10, y: 50 },
-      { id: 'p4', label: 'P4', type: 'DIGITAL_IN', x: 10, y: 65 },
-      { id: 'gnd', label: 'GND', type: 'POWER', voltage: 'GND', x: 50, y: 92 },
+      { id: 'p1', label: 'P1 (Button 1)', type: 'DIGITAL_IN', voltage: '5V', x: 10, y: 15 },
+      { id: 'p2', label: 'P2 (Button 2)', type: 'DIGITAL_IN', voltage: '5V', x: 10, y: 28 },
+      { id: 'p3', label: 'P3 (Button 3)', type: 'DIGITAL_IN', voltage: '5V', x: 10, y: 41 },
+      { id: 'p4', label: 'P4 (Button 4)', type: 'DIGITAL_IN', voltage: '5V', x: 10, y: 54 },
+      { id: 'p5', label: 'P5 (Button 5)', type: 'DIGITAL_IN', voltage: '5V', x: 10, y: 67 },
+      { id: 'p6', label: 'P6 (Button 6)', type: 'DIGITAL_IN', voltage: '5V', x: 10, y: 80 },
+      { id: 'up', label: 'UP (Joystick)', type: 'DIGITAL_IN', voltage: '5V', x: 90, y: 15 },
+      { id: 'down', label: 'DOWN', type: 'DIGITAL_IN', voltage: '5V', x: 90, y: 28 },
+      { id: 'left', label: 'LEFT', type: 'DIGITAL_IN', voltage: '5V', x: 90, y: 41 },
+      { id: 'right', label: 'RIGHT', type: 'DIGITAL_IN', voltage: '5V', x: 90, y: 54 },
+      { id: 'start', label: 'START', type: 'DIGITAL_IN', voltage: '5V', x: 90, y: 67 },
+      { id: 'select', label: 'SELECT', type: 'DIGITAL_IN', voltage: '5V', x: 90, y: 80 },
+      { id: 'gnd', label: 'GND (Common)', type: 'POWER', voltage: 'GND', x: 50, y: 95 },
     ]
   },
   {
@@ -429,7 +440,7 @@ export const componentLibrary: ComponentDefinition[] = [
       </svg>
     `),
     ports: [
-      { id: 'plus', label: '+', type: 'POWER', voltage: '12V', x: 20, y: 92 },
+      { id: 'plus', label: '+', type: 'POWER', voltage: '9V', x: 20, y: 92 },
       { id: 'minus', label: '-', type: 'POWER', voltage: 'GND', x: 80, y: 92 },
     ]
   },

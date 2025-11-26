@@ -1,6 +1,6 @@
 // Type definitions based on Technical Design Document
 
-export type Voltage = '3.3V' | '5V' | '12V' | '24V' | 'GND' | 'AC_MAINS';
+export type Voltage = '3.3V' | '5V' | '9V' | '12V' | '24V' | 'GND' | 'AC_MAINS';
 export type SignalType = 'DIGITAL_IN' | 'DIGITAL_OUT' | 'ANALOG' | 'PWM' | 'POWER' | 'HDMI' | 'AUDIO';
 
 export interface Port {
@@ -40,6 +40,7 @@ export interface ValidationResult {
 export const VOLTAGE_COLORS: Record<Voltage, string> = {
   '3.3V': '#3b82f6',   // Blue
   '5V': '#ef4444',     // Red
+  '9V': '#fb923c',     // Orange (for 9V batteries)
   '12V': '#eab308',    // Yellow
   '24V': '#f97316',    // Orange
   'GND': '#1f2937',    // Dark Gray
