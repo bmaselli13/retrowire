@@ -18,20 +18,5 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
-    Cross-Origin-Embedder-Policy = "require-corp"
-
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Content-Type = "application/javascript; charset=utf-8"
-
-[[headers]]
-  for = "/*.mjs"
-  [headers.values]
-    Content-Type = "application/javascript; charset=utf-8"
-
-[[headers]]
-  for = "/*.css"
-  [headers.values]
-    Content-Type = "text/css; charset=utf-8"
+    # Relaxed COOP to allow Firebase popup authentication
+    Cross-Origin-Opener-Policy = "unsafe-none"
