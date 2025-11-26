@@ -7,8 +7,11 @@ import {
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
+  deleteUser,
 } from 'firebase/auth';
 import { auth } from './config';
+import { deleteAllUserProjects } from './projectService';
+import { deleteUserProfile } from './userService';
 
 interface AuthContextType {
   user: User | null;
@@ -17,6 +20,7 @@ interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -59,6 +63,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await signOut(auth);
   };
 
+  const deleteAccount = async () => {
+    const current = auth.currentUser;
+    if (!current) throw new Error('No user logged in');
+    const uid = current.uid;
+
+    // Best-effort cleanup: delete projects then profile, then auth user
+    try {
+      await deleteAllUserProjects(uid);
+    } catch (e) {
+      // continue; surface errors on final delete
+      console.error('Failed to delete all projects:', e);
+    }
+
+    try {
+      await deleteUserProfile(uid);
+    } catch (e) {
+      console.error('Failed to delete user profile:', e);
+    }
+
+    // Delete authentication user (may require recent login)
+    try {
+      await deleteUser(current);
+    } catch (e: any) {
+      // If recent login required, bubble up for UI to prompt re-auth
+      throw e;
+    } finally {
+      await signOut(auth);
+      setUser(null);
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -66,6 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signInWithEmail,
     signUpWithEmail,
     logout,
+    deleteAccount,
   };
 
   return (

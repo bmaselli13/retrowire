@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, Timestamp, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, Timestamp, serverTimestamp } from 'firebase/firestore';
 import md5 from 'md5';
 import { db, COLLECTIONS } from './firestore';
 import { 
@@ -119,6 +119,14 @@ export async function updateLastLogin(uid: string): Promise<void> {
 }
 
 /**
+ * Delete user profile document
+ */
+export async function deleteUserProfile(uid: string): Promise<void> {
+  const userRef = doc(db, COLLECTIONS.USERS, uid);
+  await deleteDoc(userRef);
+}
+
+/**
  * Check if user has reached project limit
  */
 export async function canCreateProject(uid: string, currentProjectCount: number): Promise<boolean> {
@@ -133,4 +141,19 @@ export async function canCreateProject(uid: string, currentProjectCount: number)
   
   // Free users are limited
   return currentProjectCount < profile.subscription.projectLimit;
+}
+
+/**
+ * Upgrade a user to Pro tier
+ */
+export async function upgradeUserToPro(uid: string): Promise<void> {
+  const userRef = doc(db, COLLECTIONS.USERS, uid);
+  await updateDoc(userRef, {
+    subscription: {
+      tier: 'pro',
+      // projectLimit kept for UI display only; back-end logic already treats 'pro' as unlimited
+      projectLimit: 9999,
+    },
+    lastLogin: serverTimestamp(),
+  });
 }

@@ -54,6 +54,7 @@
     "@xyflow/react": "^12.3.2",
     "date-fns": "^4.1.0",
     "firebase": "^12.6.0",
+    "firebase-admin": "^13.6.0",
     "html-to-image": "^1.11.13",
     "jspdf": "^3.0.4",
     "jszip": "^3.10.1",
@@ -64,6 +65,7 @@
     "react-dropzone": "^14.3.8",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.9.6",
+    "stripe": "^15.6.0",
     "zustand": "^5.0.2"
   },
   "devDependencies": {

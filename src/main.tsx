@@ -9,6 +9,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 import LandingPage from './LandingPage';
 import ProjectsDashboard from './pages/ProjectsDashboard';
 import ProtectedApp from './ProtectedApp';
+import ProtectedRoute from './ProtectedRoute';
+import SharedProject from './pages/SharedProject';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -21,10 +23,13 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/" element={<LandingPage />} />
               
               {/* Projects dashboard (requires auth) */}
-              <Route path="/projects" element={<ProjectsDashboard />} />
+              <Route path="/projects" element={<ProtectedRoute><ProjectsDashboard /></ProtectedRoute>} />
               
               {/* Project editor (requires auth) */}
               <Route path="/editor/:projectId" element={<ProtectedApp />} />
+
+              {/* Public shared project (view-only) */}
+              <Route path="/shared/:projectId" element={<SharedProject />} />
               
               {/* Legacy app route redirect */}
               <Route path="/app" element={<Navigate to="/projects" replace />} />

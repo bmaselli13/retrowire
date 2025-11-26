@@ -2,9 +2,17 @@
   command = "npm run build"
   publish = "dist"
 
+[functions]
+  directory = "netlify/functions"
+
 [[redirects]]
   from = "/app"
   to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
   status = 200
 
 [[redirects]]
@@ -14,6 +22,9 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  # Configure these in Netlify UI for security (do NOT hardcode secrets in repo)
+  # STRIPE_SECRET_KEY = "sk_live_***"
+  # STRIPE_PRICE_ID   = "price_***"
 
 [[headers]]
   for = "/*"

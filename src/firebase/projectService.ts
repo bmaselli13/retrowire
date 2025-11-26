@@ -277,6 +277,22 @@ export async function toggleProjectPublic(projectId: string): Promise<boolean> {
 }
 
 /**
+ * Delete all projects owned by a user (utility for account deletion)
+ */
+export async function deleteAllUserProjects(userId: string): Promise<void> {
+  const projectsRef = collection(db, COLLECTIONS.PROJECTS);
+  const q = query(projectsRef, where('userId', '==', userId));
+  const snapshot = await getDocs(q);
+
+  const deletes: Promise<void>[] = [];
+  snapshot.forEach((docSnap) => {
+    deletes.push(deleteProject(docSnap.id, userId));
+  });
+
+  await Promise.all(deletes);
+}
+
+/**
  * Get recent projects (up to 5)
  */
 export async function getRecentProjects(userId: string): Promise<ProjectMetadata[]> {

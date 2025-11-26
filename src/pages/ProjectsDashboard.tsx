@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../firebase/AuthContext';
 import { useProjects } from '../hooks/useProjects';
@@ -7,7 +7,14 @@ import { shouldPromptMigration } from '../utils/migration';
 import MigrationModal from '../components/MigrationModal';
 import CreateProjectModal from '../components/CreateProjectModal';
 import ProjectCard from '../components/ProjectCard';
+import SettingsModal from '../components/SettingsModal';
+import ShareProjectModal from '../components/ShareProjectModal';
+import { ProjectMetadata } from '../types/user';
 import toast from 'react-hot-toast';
+import { verifyCheckout } from '../utils/billing';
+import { upgradeUserToPro } from '../firebase/userService';
+
+const PAYMENT_LINK = (import.meta as any)?.env?.VITE_STRIPE_PAYMENT_LINK || 'https://buy.stripe.com/9B6aEX1Kw6R02BtcsodfG00';
 
 export default function ProjectsDashboard() {
   const navigate = useNavigate();
@@ -24,13 +31,68 @@ export default function ProjectsDashboard() {
   
   const [showMigration, setShowMigration] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [shareProject, setShareProject] = useState<ProjectMetadata | null>(null);
+
+  // Dev-only bypass indicator
+  const devBypassActive = useMemo(() => {
+    try {
+      const isDev = (import.meta as any)?.env?.DEV;
+      if (!isDev) return false;
+      const url = new URL(window.location.href);
+      return url.searchParams.get('bypass') === '1' || localStorage.getItem('dev-auth-bypass') === '1';
+    } catch {
+      return false;
+    }
+  }, []);
 
   // Check for migration on mount
   useEffect(() => {
     if (user && shouldPromptMigration(user.uid)) {
       setShowMigration(true);
+    }
+  }, [user]);
+
+  // Handle Stripe checkout return
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const checkout = params.get('checkout');
+    const sessionId = params.get('session_id') || '';
+    if (!checkout) return;
+
+    const clearParams = () => {
+      params.delete('checkout');
+      params.delete('session_id');
+      const qs = params.toString();
+      const newUrl = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    };
+
+    if (checkout === 'cancel') {
+      toast('Checkout canceled', { icon: '⚠️' });
+      clearParams();
+      return;
+    }
+
+    if (checkout === 'success' && sessionId && user) {
+      (async () => {
+        try {
+          const res = await verifyCheckout(sessionId);
+          if (res.status === 'complete' || res.subscriptionId) {
+            await upgradeUserToPro(user.uid);
+            toast.success('Upgraded to Pro!');
+          } else {
+            toast.error('Checkout not completed');
+          }
+        } catch (err: any) {
+          console.error('Verify checkout failed:', err);
+          toast.error(err?.message || 'Failed to verify checkout');
+        } finally {
+          clearParams();
+        }
+      })();
     }
   }, [user]);
 
@@ -77,6 +139,11 @@ export default function ProjectsDashboard() {
 
   const canCreateMore = profile && projects.length < profile.subscription.projectLimit;
 
+  // Start Stripe checkout
+  const handleUpgrade = async () => {
+    window.location.href = PAYMENT_LINK;
+  };
+
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* Migration Modal */}
@@ -105,8 +172,29 @@ export default function ProjectsDashboard() {
         />
       )}
 
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <SettingsModal
+          onClose={() => setShowSettingsModal(false)}
+        />
+      )}
+
+      {/* Share Project Modal */}
+      {shareProject && (
+        <ShareProjectModal
+          project={shareProject}
+          onClose={() => setShareProject(null)}
+        />
+      )}
+
       {/* Header */}
       <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-10">
+        {/* Dev bypass banner */}
+        {devBypassActive && (
+          <div className="bg-yellow-900/40 border-b border-yellow-700 text-yellow-300 text-center text-xs py-1">
+            Dev auth bypass is active (testing mode). Cloud writes may require sign-in depending on Firestore rules.
+          </div>
+        )}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
@@ -134,7 +222,7 @@ export default function ProjectsDashboard() {
 
               {/* Settings & Logout */}
               <button
-                onClick={() => toast('Settings modal coming soon!')}
+                onClick={() => setShowSettingsModal(true)}
                 className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
                 title="Settings"
               >
@@ -226,7 +314,7 @@ export default function ProjectsDashboard() {
             </div>
             {profile.subscription.tier === 'free' && (
               <button
-                onClick={() => toast('Pro plan coming soon!', { icon: '🚀' })}
+                onClick={handleUpgrade}
                 className="text-sm text-blue-400 hover:text-blue-300"
               >
                 Upgrade to Pro for unlimited projects →
@@ -291,6 +379,7 @@ export default function ProjectsDashboard() {
                   onOpen={() => handleOpenProject(project.id)}
                   onDelete={() => handleDeleteProject(project.id, project.name)}
                   onDuplicate={() => handleDuplicateProject(project.id, project.name)}
+                  onShare={() => setShareProject(project)}
                 />
               ))}
             </div>

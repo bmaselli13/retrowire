@@ -140,6 +140,7 @@ export default function AuthModal({ onClose, initialEmail = '', defaultToSignup 
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="your@email.com"
+                  autoComplete="username"
                   required
                 />
               </div>
@@ -157,6 +158,7 @@ export default function AuthModal({ onClose, initialEmail = '', defaultToSignup 
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder={isLogin ? 'Enter your password' : 'Create a password (6+ characters)'}
+                  autoComplete={isLogin ? 'current-password' : 'new-password'}
                   required
                   minLength={6}
                 />
