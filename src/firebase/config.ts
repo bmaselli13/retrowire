@@ -14,6 +14,27 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 } as const;
 
+// Masked debug in production to verify env injection (no secret values logged)
+function mask(v?: string) {
+  if (!v) return 'missing';
+  const s = String(v);
+  const start = s.slice(0, 4);
+  const end = s.slice(-2);
+  return `${start}...${end} (len=${s.length})`;
+}
+if (import.meta.env.PROD) {
+  // eslint-disable-next-line no-console
+  console.warn('[FirebaseEnv]', {
+    apiKey: mask(firebaseConfig.apiKey),
+    authDomain: !!firebaseConfig.authDomain,
+    projectId: !!firebaseConfig.projectId,
+    storageBucket: !!firebaseConfig.storageBucket,
+    messagingSenderId: mask(firebaseConfig.messagingSenderId),
+    appId: mask(firebaseConfig.appId),
+    measurementId: mask(firebaseConfig.measurementId),
+  });
+}
+
 // Optional: warn in dev if env vars are missing
 if (
   !firebaseConfig.apiKey ||
